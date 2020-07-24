@@ -20,6 +20,9 @@
 		<!-- maven.compiler: Used by VS Code to detect Java Runtime -->
 		<maven.compiler.target>14</maven.compiler.target>
 		<maven.compiler.source>14</maven.compiler.source>
+
+		<!-- Sonar -->
+		<sonar.projectName>Random Memories - Memories Management</sonar.projectName>
 	</properties>
 
 	<build>
