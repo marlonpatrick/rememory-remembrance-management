@@ -1,5 +1,5 @@
 package io.mpwtech.randommemories;
 
-public class Teste {
+public class Test {
     
 }
