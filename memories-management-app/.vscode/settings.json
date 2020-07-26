@@ -1,1 +1,5 @@
-{}
+{
+    "java.format.settings.url": "eclipse-vscode-formatter.xml",
+    "java.format.settings.profile": "RandomMemoriesFormatter",
+    "editor.formatOnSave": true
+}
