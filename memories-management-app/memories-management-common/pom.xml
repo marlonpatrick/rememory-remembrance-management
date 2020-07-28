@@ -7,7 +7,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<groupId>io.mpwtech.randommemories</groupId>
-	<artifactId>memories-management-cross-cutting</artifactId>
+	<artifactId>memories-management-common</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 

@@ -1,4 +1,4 @@
-package io.mpwtech.randommemories.crosscutting.exception;
+package io.mpwtech.randommemories.common.exception;
 
 import java.util.Collection;
 

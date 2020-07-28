@@ -10,6 +10,16 @@
             "projectName": "memories-management-rest",
             "args": "",
             "vmArgs": "-Dspring.profiles.active=dev"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MemoriesManagementRestApplication<memories-management-rest>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "io.mpwtech.randommemories.memoriesmanagement.MemoriesManagementRestApplication",
+            "projectName": "memories-management-rest",
+            "args": ""
         }
     ]
 }

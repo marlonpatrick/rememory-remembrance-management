@@ -7,7 +7,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>memories-management-cross-cutting</module>
+		<module>memories-management-common</module>
 		<module>memories-management-domain</module>
 		<module>memories-management-infra</module>
 		<module>memories-management-rest</module>

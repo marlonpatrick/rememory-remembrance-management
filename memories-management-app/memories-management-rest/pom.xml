@@ -35,13 +35,19 @@
 
 		<dependency>
 			<groupId>io.mpwtech.randommemories</groupId>
-			<artifactId>memories-management-cross-cutting</artifactId>
+			<artifactId>memories-management-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.mpwtech.randommemories</groupId>
 			<artifactId>memories-management-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.mpwtech.randommemories</groupId>
+			<artifactId>memories-management-infra</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
