@@ -1,8 +1,9 @@
 package io.mpwtech.randommemories.memoriesmanagement.memory;
 
-import io.mpwtech.randommemories.memoriesmanagement.memory.MemoryDomainDTOs.CreateMemoryRequestModel;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
-class CreateMemoryUseCase {
+public class CreateMemoryUseCase {
 
     private MemoryRepository memoryRepository;
 
@@ -10,10 +11,18 @@ class CreateMemoryUseCase {
         this.memoryRepository = memoryRepository;
     }
 
-    Memory execute(CreateMemoryRequestModel memoryReqModel) {
-        Memory memory = Memory.builder().text(memoryReqModel.text()).build();
+    public CreateMemoryUCResponse execute(CreateMemoryUCRequest createMemoryUCRequest) {
+        Memory memory = Memory.builder().text(createMemoryUCRequest.text()).build();
 
-        return this.memoryRepository.create(memory);
+        memory = this.memoryRepository.create(memory);
+
+        return new CreateMemoryUCResponse(memory.getId(), memory.getCreatedAt(), memory.getText());
     }
 
+    public record CreateMemoryUCRequest(String text) {
+    }
+
+
+    public record CreateMemoryUCResponse(UUID id, ZonedDateTime createdAt, String text) {
+    }
 }

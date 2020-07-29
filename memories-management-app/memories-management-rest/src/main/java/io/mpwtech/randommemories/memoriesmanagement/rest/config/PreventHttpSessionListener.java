@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import io.mpwtech.randommemories.common.exception.GenericTechnicalException;
+import io.mpwtech.randommemories.common.exception.TechnicalException;
 
 @WebListener
 public class PreventHttpSessionListener implements HttpSessionListener {
@@ -28,7 +28,7 @@ public class PreventHttpSessionListener implements HttpSessionListener {
 
         se.getSession().invalidate();
 
-        throw new GenericTechnicalException(messageSource.getMessage(
+        throw new TechnicalException(messageSource.getMessage(
                 "this_application_is_stateless_must_not_create_http_sessions", null,
                 request.getLocale()));
     }
