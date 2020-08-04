@@ -1,57 +1,34 @@
 package io.mpwtech.randommemories.memoriesmanagement.memory;
 
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.UUID;
+import io.mpwtech.randommemories.memoriesmanagement.common.GenericEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Builder(access = AccessLevel.PACKAGE)
-public class Memory {
+public class Memory implements GenericEntity {
 
     @Getter
-    @Setter(value = AccessLevel.PACKAGE)
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     @Getter
-    @Setter(value = AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PACKAGE)
     private ZonedDateTime createdAt;
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private String text;
 
     @Override
     public int hashCode() {
-        final int PRIME = 31;
-        int result = 1;
-        result = PRIME * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return this.defaultHashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null) {
-            return true;
-        }
-
-        if (this.getClass() != obj.getClass()) {
-            if (!(obj instanceof Memory)) {
-                return false;
-            }
-        }
-
-        Memory other = (Memory) obj;
-
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-
-        return true;
+        return this.defaultEquals(Memory.class, obj);
     }
 }
