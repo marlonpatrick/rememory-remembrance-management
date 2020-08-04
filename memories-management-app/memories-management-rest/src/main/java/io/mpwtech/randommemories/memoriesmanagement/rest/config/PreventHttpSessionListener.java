@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import io.mpwtech.randommemories.common.exception.TechnicalException;
+import io.mpwtech.randommemories.memoriesmanagement.exception.TechnicalException;
 
 @WebListener
 public class PreventHttpSessionListener implements HttpSessionListener {
