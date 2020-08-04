@@ -30,12 +30,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>io.mpwtech.randommemories</groupId>
-			<artifactId>memories-management-domain</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
