@@ -32,7 +32,6 @@ public class CreateMemoryRestController {
 
         return new CreateMemoryRestResponse(createMemoryUCResponse);
     }
-
 }
 
 
@@ -50,6 +49,7 @@ class CreateMemoryRestRequest {
 
 
 @Getter
+@Setter
 @ToString
 class CreateMemoryRestResponse {
 
