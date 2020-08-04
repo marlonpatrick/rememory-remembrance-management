@@ -1,4 +1,4 @@
-package io.mpwtech.randommemories.common.exception;
+package io.mpwtech.randommemories.memoriesmanagement.exception;
 
 import java.util.Collection;
 
