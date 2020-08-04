@@ -12,8 +12,7 @@ class InMemoryMemoryRepository implements MemoryRepository {
     private Map<UUID, Memory> memories = new HashMap<>();
 
     @Override
-    public Memory create(Memory memory) {
-        memory.setId(UUID.randomUUID());
+    public Memory save(Memory memory) {
         memory.setCreatedAt(ZonedDateTime.now());
         memories.put(memory.getId(), memory);
         return memory;
