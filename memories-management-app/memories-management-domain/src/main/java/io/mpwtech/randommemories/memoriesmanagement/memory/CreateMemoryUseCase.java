@@ -3,8 +3,6 @@ package io.mpwtech.randommemories.memoriesmanagement.memory;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import io.mpwtech.randommemories.memoriesmanagement.common.Outbox;
-import io.mpwtech.randommemories.memoriesmanagement.event.DomainMessagePublisher;
 import io.mpwtech.randommemories.memoriesmanagement.memory.MemoryEvents.MemoryCreatedEvent;
 
 @Service
@@ -12,23 +10,20 @@ public class CreateMemoryUseCase {
 
     private MemoryRepository memoryRepository;
 
-    private DomainMessagePublisher messagePublisher;
-
-    CreateMemoryUseCase(DomainMessagePublisher eventPublisher, MemoryRepository memoryRepository) {
-        this.messagePublisher = eventPublisher;
+    CreateMemoryUseCase(MemoryRepository memoryRepository) {
         this.memoryRepository = memoryRepository;
     }
 
     public CreateMemoryUCResponse execute(CreateMemoryUCRequest createMemoryUCRequest) {
+        System.out.println(memoryRepository);
         Memory memory = createMemoryUCRequest.toMemory();
+        memory.setCreatedAt(ZonedDateTime.now());
 
-        memory = this.memoryRepository.save(memory);
+        memory.addOutboxMessage(MemoryCreatedEvent.outboxMessage(memory));
 
-        CreateMemoryUCResponse createMemoryUCResponse = CreateMemoryUCResponse.from(memory);
+        memory = this.memoryRepository.insert(memory);
 
-        this.messagePublisher.publish(Outbox.event(memory, MemoryCreatedEvent.from(memory)));
-
-        return createMemoryUCResponse;
+        return CreateMemoryUCResponse.from(memory);
     }
 
     public record CreateMemoryUCRequest(String text) {

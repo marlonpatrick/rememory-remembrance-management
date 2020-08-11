@@ -3,7 +3,7 @@ package io.mpwtech.randommemories.memoriesmanagement.common;
 import java.util.Objects;
 import java.util.UUID;
 
-public interface GenericEntity {
+public interface IEntity {
 
     UUID getId();
 
@@ -29,7 +29,7 @@ public interface GenericEntity {
             }
         }
 
-        GenericEntity other = (GenericEntity) obj;
+        IEntity other = (IEntity) obj;
 
         if (!Objects.equals(this.getId(), other.getId())) {
             return false;

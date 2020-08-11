@@ -9,7 +9,7 @@
             "mainClass": "io.mpwtech.randommemories.memoriesmanagement.rest.MemoriesManagementRestApplication",
             "projectName": "memories-management-rest",
             "args": "",
-            "vmArgs": "-Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=dev"
+            "vmArgs": "--enable-preview -Djava.security.egd=file:/dev/./urandom -Duser.timezone=UTC -Dspring.profiles.active=dev"
         }
     ]
 }

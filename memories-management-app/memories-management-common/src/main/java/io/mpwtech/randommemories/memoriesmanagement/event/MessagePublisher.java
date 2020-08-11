@@ -4,11 +4,11 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DomainMessagePublisher {
+public class MessagePublisher {
 
     private final ApplicationEventPublisher eventPublisher;
 
-    DomainMessagePublisher(ApplicationEventPublisher eventPublisher) {
+    MessagePublisher(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 

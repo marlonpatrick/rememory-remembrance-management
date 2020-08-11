@@ -14,19 +14,11 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<release>14</release>
-					<compilerArgs>
-						<arg>--enable-preview</arg>
-					</compilerArgs>
-					<forceJavacCompilerUse>true</forceJavacCompilerUse>
-					<parameters>true</parameters>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

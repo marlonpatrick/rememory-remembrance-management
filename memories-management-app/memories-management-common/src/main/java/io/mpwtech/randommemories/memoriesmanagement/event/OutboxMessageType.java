@@ -1,4 +1,4 @@
-package io.mpwtech.randommemories.memoriesmanagement.common;
+package io.mpwtech.randommemories.memoriesmanagement.event;
 
 public enum OutboxMessageType {
     EVENT, COMMAND, QUERY;

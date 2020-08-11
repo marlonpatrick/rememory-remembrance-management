@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+
+  rm-memories-mngmt-mongodb:
+    ports:
+      - 27017:27017
+    env_file:
+      - ./mongodb.dev.env

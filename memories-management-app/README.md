@@ -32,3 +32,8 @@ settings.xml
 
 ./mvnw clean install
 ./mvnw -P randommemories verify sonar:sonar
+./mvnw -P dev -pl memories-management-rest -am spring-boot:run
+
+
+docker-compose -f docker/compose.base.yml -f docker/compose.dev.yml up -d rm-memories-mngmt-mongodb
+
