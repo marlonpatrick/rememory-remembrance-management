@@ -47,4 +47,5 @@ class MongoClientConfig extends AbstractMongoClientConfiguration {
         return Boolean
                 .valueOf(this.environment.getProperty("spring.data.mongodb.auto-index-creation"));
     }
+
 }

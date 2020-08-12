@@ -35,5 +35,24 @@ settings.xml
 ./mvnw -P dev -pl memories-management-rest -am spring-boot:run
 
 
+# a conexão padrão é mongodb://mongo:mongo@localhost:27017/admin
+# onde o usuario e senha estão definidos nas variaveis de ambiente
+# MONGO_INITDB_ROOT_USERNAME=mongo
+# MONGO_INITDB_ROOT_PASSWORD=mongo
 docker-compose -f docker/compose.base.yml -f docker/compose.dev.yml up -d rm-memories-mngmt-mongodb
 
+# Após subir o mongo, criar o banco de dados e usuário da aplicação
+use rm-memories-mngmt
+db.runCommand({ 
+    "createUser" : "rm-memories-mngmt", 
+    "pwd" : "rm-memories-mngmt", 
+    "customData" : {
+
+    }, 
+    "roles" : [
+        {
+            "role" : "dbOwner", 
+            "db" : "rm-memories-mngmt"
+        }
+    ]
+});
