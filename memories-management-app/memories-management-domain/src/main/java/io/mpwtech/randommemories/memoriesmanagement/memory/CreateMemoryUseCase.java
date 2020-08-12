@@ -15,7 +15,6 @@ public class CreateMemoryUseCase {
     }
 
     public CreateMemoryUCResponse execute(CreateMemoryUCRequest createMemoryUCRequest) {
-        System.out.println(memoryRepository);
         Memory memory = createMemoryUCRequest.toMemory();
         memory.setCreatedAt(ZonedDateTime.now());
 

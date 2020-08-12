@@ -3,11 +3,14 @@ package io.mpwtech.randommemories.memoriesmanagement.common;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessagePayload;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessageType;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString()
 public final class OutboxMessage {
 
     private final UUID id;
@@ -27,6 +30,7 @@ public final class OutboxMessage {
     // Transient
     @Getter
     @Transient
+    @ToString.Exclude
     private final OutboxMessagePayload payloadObject;
 
     public OutboxMessage(OutboxMessagePayload payloadObject) {
@@ -40,6 +44,20 @@ public final class OutboxMessage {
 
         // TODO: json
         this.payload = payloadObject.toString();
+    }
+
+    @PersistenceConstructor
+    OutboxMessage(UUID id, ZonedDateTime createdAt, String entityName, UUID entityId,
+            OutboxMessageType messageType, String messageName, String payload) {
+
+        this.id = id;
+        this.createdAt = createdAt;
+        this.entityName = entityName;
+        this.entityId = entityId;
+        this.messageType = messageType;
+        this.messageName = messageName;
+        this.payload = payload;
+        this.payloadObject = null;
     }
 
     public int hashCode() {
