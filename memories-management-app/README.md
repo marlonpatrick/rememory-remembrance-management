@@ -39,20 +39,5 @@ settings.xml
 # onde o usuario e senha estão definidos nas variaveis de ambiente
 # MONGO_INITDB_ROOT_USERNAME=mongo
 # MONGO_INITDB_ROOT_PASSWORD=mongo
-docker-compose -f docker/compose.base.yml -f docker/compose.dev.yml up -d rm-memories-mngmt-mongodb
-
-# Após subir o mongo, criar o banco de dados e usuário da aplicação
-use rm-memories-mngmt
-db.runCommand({ 
-    "createUser" : "rm-memories-mngmt", 
-    "pwd" : "rm-memories-mngmt", 
-    "customData" : {
-
-    }, 
-    "roles" : [
-        {
-            "role" : "dbOwner", 
-            "db" : "rm-memories-mngmt"
-        }
-    ]
-});
+docker-compose -f docker/compose.base.yml -f docker/compose.dev.yml down
+docker-compose -f docker/compose.base.yml -f docker/compose.dev.yml up -d
