@@ -2,7 +2,7 @@ package io.mpwtech.randommemories.memoriesmanagement.exception;
 
 import java.util.Collection;
 
-public class TechnicalException extends GenericAppException {
+public class TechnicalException extends AbstractAppException {
 
     private static final long serialVersionUID = 1L;
 
