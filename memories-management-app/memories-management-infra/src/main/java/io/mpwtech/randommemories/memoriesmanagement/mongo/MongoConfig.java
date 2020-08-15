@@ -53,6 +53,10 @@ class MongoClientConfig extends AbstractMongoClientConfiguration {
         adapter.registerConverter(ZonedDateTimeToDateConverter.INSTANCE);
     }
 
+    /**
+     * This method has been overridden to remove the configuration that writes the Java class
+     * (_class) to the MongoDB document.
+     */
     @Override
     public MappingMongoConverter mappingMongoConverter(MongoDatabaseFactory databaseFactory,
             MongoCustomConversions customConversions, MongoMappingContext mappingContext) {

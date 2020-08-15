@@ -10,7 +10,7 @@ import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessageType;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString()
+@ToString
 public final class OutboxMessage {
 
     private final UUID id;
