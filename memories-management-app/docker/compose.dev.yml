@@ -3,7 +3,24 @@ version: '3.8'
 services:
 
   rm-memories-mngmt-mongodb:
+    command: --replSet rs-rm-memories-mngmt-dev --bind_ip rm-memories-mngmt-mongodb,localhost
     ports:
       - 27017:27017
+    volumes:
+      - ./mongo-init.dev.js:/docker-entrypoint-initdb.d/mongo-init.dev.js:ro      
     env_file:
       - ./mongodb.dev.env
+
+
+  rm-memories-mngmt-mongodb-init-replicaset:
+    image: mongo:4.4.0
+    container_name: rm-memories-mngmt-mongodb-init-replicaset
+    command: mongo --host rm-memories-mngmt-mongodb -u mongo -p mongo --authenticationDatabase admin rm-memories-mngmt --eval "printjson(rs.initiate())"
+    restart: on-failure
+    depends_on:
+      - rm-memories-mngmt-mongodb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
