@@ -2,7 +2,7 @@ package io.mpwtech.randommemories.memoriesmanagement.exception;
 
 import java.util.Collection;
 
-public class BusinessException extends GenericAppException {
+public class BusinessException extends AbstractAppException {
 
     private static final long serialVersionUID = 1L;
 

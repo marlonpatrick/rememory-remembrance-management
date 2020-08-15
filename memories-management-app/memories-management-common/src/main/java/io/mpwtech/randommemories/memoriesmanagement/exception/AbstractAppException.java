@@ -5,29 +5,29 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class GenericAppException extends RuntimeException {
+public abstract class AbstractAppException extends RuntimeException {
 
 
 	private static final long serialVersionUID = 1L;
 
 	private final List<String> messages = new ArrayList<>();
 
-	public GenericAppException(String message) {
+	public AbstractAppException(String message) {
 		super(message);
 		this.messages.add(message);
 	}
 
-	public GenericAppException(String message, Throwable cause) {
+	public AbstractAppException(String message, Throwable cause) {
 		super(message, cause);
 		this.messages.add(message);
 	}
 
-	public GenericAppException(Throwable cause) {
+	public AbstractAppException(Throwable cause) {
 		super(cause);
-		this.messages.add(this.getMessage());
+		this.messages.add(cause.getMessage());
 	}
 
-	public GenericAppException(Collection<String> messages) {
+	public AbstractAppException(Collection<String> messages) {
 		super(messages == null ? null : messages.toString());
 		this.messages.addAll(messages);
 	}
