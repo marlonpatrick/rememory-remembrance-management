@@ -3,15 +3,17 @@ package io.mpwtech.randommemories.memoriesmanagement.common;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import org.bson.Document;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessagePayload;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessageType;
-import lombok.Getter;
+import io.mpwtech.randommemories.memoriesmanagement.json.JSONUtils;
 import lombok.ToString;
 
 @ToString
 public final class OutboxMessage {
+
 
     private final UUID id;
 
@@ -25,10 +27,8 @@ public final class OutboxMessage {
 
     private final String messageName;
 
-    private final String payload;
+    private final Document payload;
 
-    // Transient
-    @Getter
     @Transient
     @ToString.Exclude
     private final OutboxMessagePayload payloadObject;
@@ -41,14 +41,12 @@ public final class OutboxMessage {
         this.payloadObject = payloadObject;
         this.messageType = payloadObject.messageType();
         this.messageName = payloadObject.getClass().getSimpleName();
-
-        // TODO: json
-        this.payload = payloadObject.toString();
+        this.payload = Document.parse(JSONUtils.toJSON(this.payloadObject));
     }
 
     @PersistenceConstructor
     OutboxMessage(UUID id, ZonedDateTime createdAt, String entityName, UUID entityId,
-            OutboxMessageType messageType, String messageName, String payload) {
+            OutboxMessageType messageType, String messageName, Document payload) {
 
         this.id = id;
         this.createdAt = createdAt;

@@ -1,5 +1,6 @@
 package io.mpwtech.randommemories.memoriesmanagement.rest.memory;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,12 +21,16 @@ public class TestMongoStreamingAppRunner implements ApplicationRunner {
         reactiveMongoTemplate.getMongoDatabase()
                 .doOnNext(e -> System.out.println("DATABASE NAME: " + e.getName())).subscribe();
 
-        Flux<ChangeStreamEvent<String>> flux = reactiveMongoTemplate
-                .changeStream("rm-memories-mngmt", null, ChangeStreamOptions.empty(), String.class);
+        Flux<ChangeStreamEvent<Document>> flux = reactiveMongoTemplate.changeStream(null,
+                ChangeStreamOptions.empty(), Document.class);
 
         flux.doOnNext(event -> {
             System.out.println("CHANGE STREAM MARLON...");
+            System.out.println(event.getClass());
+            System.out.println(event.getBody());
             System.out.println(event.getRaw());
+            System.out.println(event.getDatabaseName());
+            System.out.println(event.getCollectionName());
         }).subscribe();
 
         System.out.println(getClass().getName() + " finished...");
