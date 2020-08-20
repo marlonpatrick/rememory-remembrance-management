@@ -1,15 +1,36 @@
 version: '3.8'
 
+volumes:
+  rm_memories_mngmt_mongodb_data: {}
+  rm_memories_mngmt_zookeeper_data: {}
+  rm_memories_mngmt_zookeeper_data_log: {}
+  rm_memories_mngmt_kafka_data: {}
+
 services:
 
   rm-memories-mngmt-mongodb:
+    image: mongo:4.4.0
+    container_name: rm-memories-mngmt-mongodb
     command: --replSet rs-rm-memories-mngmt-dev --bind_ip rm-memories-mngmt-mongodb,localhost
+    restart: always
     ports:
       - 27017:27017
     volumes:
+      - rm_memories_mngmt_mongodb_data:/data/db
       - ./mongo-init.dev.js:/docker-entrypoint-initdb.d/mongo-init.dev.js:ro      
     env_file:
       - ./mongodb.dev.env
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-memories-mngmt-mongodb/27017 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
 
 
   rm-memories-mngmt-mongodb-init-replicaset:
@@ -24,3 +45,49 @@ services:
       options:
         max-size: "1m"
         max-file: "5"
+
+
+  rm-memories-mngmt-zookeeper:
+    image: zookeeper:3.4.9
+    container_name: rm-memories-mngmt-zookeeper
+    ports:
+      - 2181:2181
+    env_file:
+      - ./zookeeper.dev.env
+    volumes:
+      - rm_memories_mngmt_zookeeper_data:/data
+      - rm_memories_mngmt_zookeeper_data_log:/datalog
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-memories-mngmt-zookeeper/2181 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+
+  rm-memories-mngmt-kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    container_name: rm-memories-mngmt-kafka
+    ports:
+      - 9092:9092
+    env_file:
+      - ./kafka.dev.env
+    volumes:
+      - rm_memories_mngmt_kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-memories-mngmt-kafka/9092 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-memories-mngmt-zookeeper
