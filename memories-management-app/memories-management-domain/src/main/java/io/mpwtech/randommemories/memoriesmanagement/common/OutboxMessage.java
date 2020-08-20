@@ -5,10 +5,8 @@ import java.util.Objects;
 import java.util.UUID;
 import org.bson.Document;
 import org.springframework.data.annotation.PersistenceConstructor;
-import org.springframework.data.annotation.Transient;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessagePayload;
 import io.mpwtech.randommemories.memoriesmanagement.event.OutboxMessageType;
-import io.mpwtech.randommemories.memoriesmanagement.json.JSONUtils;
 import lombok.ToString;
 
 @ToString
@@ -27,21 +25,16 @@ public final class OutboxMessage {
 
     private final String messageName;
 
-    private final Document payload;
+    private final Object payload;
 
-    @Transient
-    @ToString.Exclude
-    private final OutboxMessagePayload payloadObject;
-
-    public OutboxMessage(OutboxMessagePayload payloadObject) {
+    public OutboxMessage(OutboxMessagePayload payload) {
         this.id = UUID.randomUUID();
         this.createdAt = ZonedDateTime.now();
-        this.entityName = payloadObject.entityClass().getSimpleName();
-        this.entityId = payloadObject.entityId();
-        this.payloadObject = payloadObject;
-        this.messageType = payloadObject.messageType();
-        this.messageName = payloadObject.getClass().getSimpleName();
-        this.payload = Document.parse(JSONUtils.toJSON(this.payloadObject));
+        this.entityName = payload.entityClass().getSimpleName();
+        this.entityId = payload.entityId();
+        this.messageType = payload.messageType();
+        this.messageName = payload.getClass().getSimpleName();
+        this.payload = payload;
     }
 
     @PersistenceConstructor
@@ -55,7 +48,6 @@ public final class OutboxMessage {
         this.messageType = messageType;
         this.messageName = messageName;
         this.payload = payload;
-        this.payloadObject = null;
     }
 
     public int hashCode() {
