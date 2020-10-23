@@ -1,0 +1,281 @@
+version: '3.8'
+
+volumes:
+  rm_remembrance_management_mongodb_data: {}
+  rm_remembrance_management_zookeeper_data: {}
+  rm_remembrance_management_zookeeper_data_log: {}
+  rm_remembrance_management_kafka_data: {}
+
+services:
+
+  rm-remembrance-management-mongodb:
+    image: mongo:4.4.0
+    container_name: rm-remembrance-management-mongodb
+    command: --replSet rs-rm-remembrance-management-dev --bind_ip rm-remembrance-management-mongodb,localhost
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - rm_remembrance_management_mongodb_data:/data/db
+      - ./mongo-init.dev.js:/docker-entrypoint-initdb.d/mongo-init.dev.js:ro      
+    env_file:
+      - ./mongodb.dev.env
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-mongodb/27017 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+
+
+  rm-remembrance-management-mongodb-init-replicaset:
+    image: mongo:4.4.0
+    container_name: rm-remembrance-management-mongodb-init-replicaset
+    command: mongo --host rm-remembrance-management-mongodb -u mongo -p mongo --authenticationDatabase admin rm-remembrance-management --eval "printjson(rs.initiate())"
+    restart: on-failure
+    depends_on:
+      - rm-remembrance-management-mongodb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+
+
+  rm-remembrance-management-zookeeper:
+    image: zookeeper:3.4.9
+    container_name: rm-remembrance-management-zookeeper
+    ports:
+      - 2181:2181
+    env_file:
+      - ./zookeeper.dev.env
+    volumes:
+      - rm_remembrance_management_zookeeper_data:/data
+      - rm_remembrance_management_zookeeper_data_log:/datalog
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-zookeeper/2181 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+
+  rm-remembrance-management-kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    container_name: rm-remembrance-management-kafka
+    ports:
+      - 9092:9092
+    env_file:
+      - ./kafka.dev.env
+    volumes:
+      - rm_remembrance_management_kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-kafka/9092 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-zookeeper
+
+
+  rm-remembrance-management-kafka-schema-registry:
+    image: confluentinc/cp-schema-registry:5.5.1
+    container_name: rm-remembrance-management-kafka-schema-registry
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://rm-remembrance-management-kafka:19092
+      SCHEMA_REGISTRY_HOST_NAME: rm-remembrance-management-kafka-schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-kafka-schema-registry/8081 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-zookeeper
+      - rm-remembrance-management-kafka
+
+  rm-remembrance-management-kafka-schema-registry-ui:
+    image: landoop/schema-registry-ui:0.9.5
+    container_name: rm-remembrance-management-kafka-schema-registry-ui
+    ports:
+      - 8001:8000
+    environment:
+      SCHEMAREGISTRY_URL: http://rm-remembrance-management-kafka-schema-registry:8081/
+      PROXY: "true"
+    # healthcheck:
+    #   test: bash -c "</dev/tcp/rm-remembrance-management-kafka-schema-registry-ui/8000 && exit 0 || exit 1"
+    #   start_period: 15s
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-kafka-schema-registry
+
+  rm-remembrance-management-kafka-rest-proxy:
+    image: confluentinc/cp-kafka-rest:5.5.1
+    container_name: rm-remembrance-management-kafka-rest-proxy
+    ports:
+      - 8082:8082
+    environment:
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8082/
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://rm-remembrance-management-kafka-schema-registry:8081/
+      KAFKA_REST_HOST_NAME: rm-remembrance-management-kafka-rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: PLAINTEXT://rm-remembrance-management-kafka:19092
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-kafka-rest-proxy/8082 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-zookeeper
+      - rm-remembrance-management-kafka
+      - rm-remembrance-management-kafka-schema-registry
+
+  rm-remembrance-management-kafka-topics-ui:
+    image: landoop/kafka-topics-ui:0.9.4
+    container_name: rm-remembrance-management-kafka-topics-ui
+    ports:
+      - 8000:8000
+    environment:
+      KAFKA_REST_PROXY_URL: http://rm-remembrance-management-kafka-rest-proxy:8082/
+      PROXY: "true"
+    # healthcheck:
+    #   test: bash -c "</dev/tcp/rm-remembrance-management-kafka-topics-ui/8000 && exit 0 || exit 1"
+    #   start_period: 15s
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-zookeeper
+      - rm-remembrance-management-kafka
+      - rm-remembrance-management-kafka-schema-registry
+      - rm-remembrance-management-kafka-rest-proxy
+
+  rm-remembrance-management-kafka-connect:
+    image: confluentinc/cp-kafka-connect:5.5.1
+    container_name: rm-remembrance-management-kafka-connect
+    ports:
+      - 8083:8083
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: rm-remembrance-management-kafka:19092
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: rememory-group
+      CONNECT_CONFIG_STORAGE_TOPIC: rememory-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: rememory-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: rememory-connect-status
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: 'http://rm-remembrance-management-kafka-schema-registry:8081'
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: 'http://rm-remembrance-management-kafka-schema-registry:8081'
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_REST_ADVERTISED_HOST_NAME: rm-remembrance-management-kafka-connect
+      CONNECT_LOG4J_ROOT_LOGLEVEL: INFO
+      CONNECT_LOG4J_LOGGERS: org.apache.kafka.connect.runtime.rest=WARN,org.reflections=ERROR
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_PLUGIN_PATH: '/usr/share/java,/etc/kafka-connect/jars'
+    volumes:
+      - ./kafka-connectors-dev:/etc/kafka-connect/jars/
+    healthcheck:
+      test: bash -c "</dev/tcp/rm-remembrance-management-kafka-connect/8083 && exit 0 || exit 1"
+      start_period: 15s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-zookeeper
+      - rm-remembrance-management-kafka
+      - rm-remembrance-management-kafka-schema-registry
+      - rm-remembrance-management-kafka-rest-proxy
+
+
+  rm-remembrance-management-kafka-connect-ui:
+    image: landoop/kafka-connect-ui:0.9.7
+    container_name: rm-remembrance-management-kafka-connect-ui
+    ports:
+      - 8003:8000
+    environment:
+      CONNECT_URL: http://rm-remembrance-management-kafka-connect:8083/
+      PROXY: "true"
+    # healthcheck:
+    #   test: bash -c "</dev/tcp/rm-remembrance-management-kafka-connect-ui/8000 && exit 0 || exit 1"
+    #   start_period: 15s
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "5"
+    depends_on:
+      - rm-remembrance-management-kafka-connect
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:5.5.1
+    container_name: control-center
+    depends_on:
+      - rm-remembrance-management-zookeeper
+      - rm-remembrance-management-kafka
+      - rm-remembrance-management-kafka-schema-registry
+      - rm-remembrance-management-kafka-connect
+    ports:
+      - 9021:9021
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'rm-remembrance-management-kafka:19092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'rm-remembrance-management-zookeeper:2181'
+      CONTROL_CENTER_CONNECT_CLUSTER: 'rm-remembrance-management-kafka-connect:8083'
+      # CONTROL_CENTER_KSQL_KSQLDB1_URL: "http://ksqldb-server:8088"
+      # CONTROL_CENTER_KSQL_KSQLDB1_ADVERTISED_URL: "http://localhost:8088"
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://rm-remembrance-management-kafka-schema-registry:8081"
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      PORT: 9021
