@@ -36,7 +36,7 @@ services:
   rm-remembrance-management-mongodb-init-replicaset:
     image: mongo:4.4.0
     container_name: rm-remembrance-management-mongodb-init-replicaset
-    command: mongo --host rm-remembrance-management-mongodb -u mongo -p mongo --authenticationDatabase admin rm-remembrance-management --eval "printjson(rs.initiate())"
+    command: mongo --host rm-remembrance-management-mongodb -u mongo -p mongo --authenticationDatabase admin rememory-remembrance-management --eval "printjson(rs.initiate())"
     restart: on-failure
     depends_on:
       - rm-remembrance-management-mongodb

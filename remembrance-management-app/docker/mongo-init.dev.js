@@ -2,7 +2,29 @@ print('mongo-init.dev.js started...');
 
 db.auth('mongo', 'mongo');
 
-const devDatabaseName = 'rm-remembrance-management';
+db.createUser({
+    user: 'kafka-source-connector',
+    pwd: 'kafka-source-connector',
+    roles: [
+        {
+            role: 'readAnyDatabase',
+            db: 'admin',
+        },
+    ],
+});
+
+db.createUser({
+    user: 'kafka-sink-connector',
+    pwd: 'kafka-sink-connector',
+    roles: [
+        {
+            role: 'readWriteAnyDatabase',
+            db: 'admin',
+        },
+    ],
+});
+
+const devDatabaseName = 'rememory-remembrance-management';
 
 const devDatabase = db.getSiblingDB(devDatabaseName);
 
@@ -17,7 +39,7 @@ devDatabase.createUser({
     ],
 });
 
+print('mongo-init.dev.js finished')
+
 // Occur an error when running here
 // rs.initiate();
-
-print('mongo-init.dev.js finished')
