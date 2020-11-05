@@ -3,12 +3,12 @@ package io.mpwtech.rememory.remembrancemanagement.remembrance;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import io.mpwtech.rememory.remembrancemanagement.common.OutboxMessage;
-import io.mpwtech.rememory.remembrancemanagement.event.OutboxEventPayload;
+import io.mpwtech.rememory.remembrancemanagement.event.OutboxMessagePayload;
 
 public class RemembranceEvents {
 
     public record RemembranceCreatedEvent(UUID id, ZonedDateTime createdAt, String text)
-            implements OutboxEventPayload {
+            implements OutboxMessagePayload {
 
         @Override
         public UUID entityId() {

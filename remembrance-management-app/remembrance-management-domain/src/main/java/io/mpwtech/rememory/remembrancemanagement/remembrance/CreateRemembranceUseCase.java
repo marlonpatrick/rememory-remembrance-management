@@ -16,10 +16,14 @@ public class CreateRemembranceUseCase {
 
     public CreateRemembranceUCResponse execute(
             CreateRemembranceUCRequest createRemembranceUCRequest) {
+
         Remembrance remembrance = createRemembranceUCRequest.toRemembrance();
         remembrance.setCreatedAt(ZonedDateTime.now());
 
         remembrance.addOutboxMessage(RemembranceCreatedEvent.outboxMessage(remembrance));
+
+        System.out.println("MARLON:");
+        System.out.println(remembrance);
 
         remembrance = this.remembranceRepository.insert(remembrance);
 

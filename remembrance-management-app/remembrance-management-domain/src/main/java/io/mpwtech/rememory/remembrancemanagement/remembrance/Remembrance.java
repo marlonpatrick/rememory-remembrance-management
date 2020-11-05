@@ -44,4 +44,6 @@ public class Remembrance implements IEntity {
     boolean addOutboxMessage(OutboxMessage outboxMessage) {
         return this.outbox.add(outboxMessage);
     }
+
+
 }

@@ -7,6 +7,4 @@ public interface OutboxMessagePayload {
     Class<?> entityClass();
 
     UUID entityId();
-
-    OutboxMessageType messageType();
 }
