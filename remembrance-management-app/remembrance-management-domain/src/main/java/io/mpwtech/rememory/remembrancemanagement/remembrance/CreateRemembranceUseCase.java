@@ -1,17 +1,12 @@
 package io.mpwtech.rememory.remembrancemanagement.remembrance;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import io.mpwtech.rememory.remembrancemanagement.remembrance.RemembranceEvents.RemembranceCreatedEvent;
 
 @Service
 public class CreateRemembranceUseCase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateRemembranceUseCase.class);
 
     private RemembranceRepository remembranceRepository;
 
@@ -27,18 +22,9 @@ public class CreateRemembranceUseCase {
 
         remembrance.addOutboxMessage(RemembranceCreatedEvent.from(remembrance));
 
-        LOGGER.info("ANTES INSERT");
-
         remembrance = this.remembranceRepository.insert(remembrance);
 
-        LOGGER.info("DEPOIS INSERT");
-
-        CreateRemembranceUCResponse from = CreateRemembranceUCResponse.from(remembrance);
-
-        LOGGER.info("FIM");
-
-        return from;
-
+        return CreateRemembranceUCResponse.from(remembrance);
     }
 
     public record CreateRemembranceUCRequest(String text) {
