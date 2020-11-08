@@ -2,12 +2,14 @@ package io.mpwtech.rememory.remembrancemanagement.remembrance;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import io.mpwtech.rememory.remembrancemanagement.common.OutboxMessage;
-import io.mpwtech.rememory.remembrancemanagement.event.OutboxMessagePayload;
+import io.mpwtech.rememory.remembrancemanagement.outbox.OutboxMessagePayload;
 
-public class RemembranceEvents {
+public final class RemembranceEvents {
 
-    public record RemembranceCreatedEvent(UUID id, ZonedDateTime createdAt, String text)
+    private RemembranceEvents() {
+    }
+
+    public final record RemembranceCreatedEvent(UUID id, ZonedDateTime createdAt, String text)
             implements OutboxMessagePayload {
 
         @Override
@@ -20,9 +22,9 @@ public class RemembranceEvents {
             return Remembrance.class;
         }
 
-        static OutboxMessage outboxMessage(Remembrance remembrance) {
-            return new OutboxMessage(new RemembranceCreatedEvent(remembrance.getId(),
-                    remembrance.getCreatedAt(), remembrance.getText()));
+        static RemembranceCreatedEvent from(Remembrance remembrance) {
+            return new RemembranceCreatedEvent(remembrance.getId(), remembrance.getCreatedAt(),
+                    remembrance.getText());
         }
     }
 }

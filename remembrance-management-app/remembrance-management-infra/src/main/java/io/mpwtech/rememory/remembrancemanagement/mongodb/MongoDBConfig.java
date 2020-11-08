@@ -1,4 +1,4 @@
-package io.mpwtech.rememory.remembrancemanagement.mongo;
+package io.mpwtech.rememory.remembrancemanagement.mongodb;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings.Builder;

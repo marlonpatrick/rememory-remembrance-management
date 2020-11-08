@@ -1,4 +1,4 @@
-package io.mpwtech.rememory.remembrancemanagement.event;
+package io.mpwtech.rememory.remembrancemanagement.outbox;
 
 import java.util.UUID;
 

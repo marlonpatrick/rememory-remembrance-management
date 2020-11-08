@@ -3,7 +3,7 @@ package io.mpwtech.rememory.remembrancemanagement.common;
 import java.util.Objects;
 import java.util.UUID;
 
-public interface IEntity {
+public interface Entity {
 
     UUID getId();
 
@@ -29,7 +29,7 @@ public interface IEntity {
             }
         }
 
-        IEntity other = (IEntity) obj;
+        Entity other = (Entity) obj;
 
         if (!Objects.equals(this.getId(), other.getId())) {
             return false;

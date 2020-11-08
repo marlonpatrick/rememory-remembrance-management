@@ -3,7 +3,7 @@ package io.mpwtech.rememory.remembrancemanagement.remembrance;
 import java.util.Optional;
 import java.util.UUID;
 
-interface RemembranceRepository {
+public interface RemembranceRepository {
 
     Remembrance insert(Remembrance remembrance);
 

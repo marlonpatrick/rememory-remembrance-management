@@ -1,11 +1,10 @@
-package io.mpwtech.rememory.remembrancemanagement.common;
+package io.mpwtech.rememory.remembrancemanagement.outbox;
 
 import java.time.ZonedDateTime;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.UUID;
-import org.bson.Document;
 import org.springframework.data.annotation.PersistenceConstructor;
-import io.mpwtech.rememory.remembrancemanagement.event.OutboxMessagePayload;
 import lombok.ToString;
 
 @ToString
@@ -35,7 +34,7 @@ public final class OutboxMessage {
 
     @PersistenceConstructor
     OutboxMessage(UUID id, ZonedDateTime createdAt, String entityName, UUID entityId,
-            String messageName, Document payload) {
+            String messageName, LinkedHashMap<String, Object> payload) {
 
         this.id = id;
         this.createdAt = createdAt;
@@ -69,10 +68,6 @@ public final class OutboxMessage {
 
         OutboxMessage other = (OutboxMessage) obj;
 
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }
