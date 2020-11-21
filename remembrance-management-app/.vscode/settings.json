@@ -1,9 +1,0 @@
-{
-    "java.format.settings.url": "eclipse-vscode-formatter.xml",
-    "java.format.settings.profile": "RememoryFormatter",
-    "editor.formatOnSave": true,
-    "sonarlint.connectedMode.project": {
-        "connectionId": "marlonpatrick",
-        "projectKey": "io.mpwtech.rememory:remembrance-management"
-    }
-}
