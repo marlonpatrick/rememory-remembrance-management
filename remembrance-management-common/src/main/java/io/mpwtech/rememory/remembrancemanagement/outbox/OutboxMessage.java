@@ -10,6 +10,12 @@ import lombok.ToString;
 @ToString
 public final class OutboxMessage {
 
+    /**
+     * Populated by OutboxTargetTopicPrefixInitializer
+     */
+    static String TARGET_TOPIC_PREFIX = "";
+
+
 
     private final UUID id;
 
@@ -21,20 +27,24 @@ public final class OutboxMessage {
 
     private final String messageName;
 
+    private final String targetTopic;
+
     private final Object payload;
+
 
     public OutboxMessage(OutboxMessagePayload payload) {
         this.id = UUID.randomUUID();
         this.createdAt = ZonedDateTime.now();
-        this.entityName = payload.entityClass().getSimpleName();
+        this.entityName = payload.entityName();
         this.entityId = payload.entityId();
-        this.messageName = payload.getClass().getSimpleName();
+        this.messageName = payload.messageName();
+        this.targetTopic = TARGET_TOPIC_PREFIX + payload.targetTopicSufix();
         this.payload = payload;
     }
 
     @PersistenceConstructor
     OutboxMessage(UUID id, ZonedDateTime createdAt, String entityName, UUID entityId,
-            String messageName, LinkedHashMap<String, Object> payload) {
+            String messageName, String targetTopic, LinkedHashMap<String, Object> payload) {
 
         this.id = id;
         this.createdAt = createdAt;
@@ -42,6 +52,7 @@ public final class OutboxMessage {
         this.entityId = entityId;
         this.messageName = messageName;
         this.payload = payload;
+        this.targetTopic = targetTopic;
     }
 
     public int hashCode() {
